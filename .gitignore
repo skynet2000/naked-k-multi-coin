@@ -1,0 +1,9 @@
+*.csv
+*.json
+__pycache__/
+*.pyc
+.env
+*secret*
+*webhook*
+node_modules/
+.DS_Store
