@@ -13,7 +13,8 @@ LEVERAGE       = 3            # 固定杠杆
 RISK_PCT       = 0.02         # 每笔风险敞口比例
 RR_RATIO       = 2.0          # 止盈风险收益比
 ATR_PERIOD     = 14           # ATR周期
-ATR_MULTI_SL    = 0.8          # ATR倍数 -> 止损
+ATR_MULTI_SL   = 1.2          # ATR止损倍数（优化：0.8->1.2）
+MIN_ATR        = 0.0005       # 最小ATR过滤（优化：新增，过滤低波动假信号）          # ATR倍数 -> 止损
 CONFIRM_BARS    = 1            # 信号确认所需K线数
 FEE_TAKER      = 0.0005       # 吃单手续费 (0.05%)
 FEE_MAKER      = 0.0002       # 挂单手续费 (0.02%)
@@ -209,6 +210,8 @@ def run_backtest(bars, initial_capital=1000, leverage=3, risk_pct=0.02):
                     conf_bars += 1
 
             if conf_bars >= CONFIRM_BARS:
+                if atr < MIN_ATR:
+                    continue  # ATR过低跳过
                 direction  = signal
                 sl_price   = (bars[i]["low"]  - atr * ATR_MULTI_SL * 0.5) if direction == 1 else (bars[i]["high"] + atr * ATR_MULTI_SL * 0.5)
                 risk_dist  = abs(bars[i]["close"] - sl_price)
