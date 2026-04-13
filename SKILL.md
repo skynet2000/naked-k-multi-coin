@@ -74,7 +74,10 @@ LINK-USDT-SWAP  HYPE-USDT-SWAP
 | `max_hourly_trades` | integer | ❌ | 2 | 每小时最大交易笔数 |
 | `max_concurrent_positions` | integer | ❌ | 5 | 最大并发持仓数数 |
 | `daily_drawdown_limit` | number | ❌ | 8 | 日回撤熔断阈值（%），超过停止开仓 |
-| `leverage` | integer | ❌ | 10 | 默认杠杆倍数（10x 激进） |
+| `leverage` | integer | ❌ | 10 | 默认杠杆倍数（10x 激进）
+| `atr_stop_multi` | number | | 1.2 | ATR止损倍数（优化：0.8->1.2，减少噪音触发） |
+| `min_atr_filter` | number | | 0.0005 | 最小ATR过滤（USDT值），低于此值跳过交易 |
+ |
 | `profile` | string | ❌ | demo | 实盘 live / 模拟盘 demo |
 | `pairs` | string[] | ❌ | 全量10 | 指定扫描的交易对列表 |
 | `scan_mode` | string | ❌ | all | 扫描模式：`all` 全量 / `focus` 仅重点关注 |
@@ -323,7 +326,7 @@ okx swap place --instId <instId> --side sell --ordType market \
 **止损**（激进移动止损）：
 
 ```bash
-# 多单止损（激进：止损距离开仓 1.5 ATR）
+# 多单止损（激进：止损距离开仓 1.2 ATR）
 okx swap place-algo --instId <instId> --side sell \
   --ordType stop_loss --sz <持仓张数> \
   --slTriggerPx <止损价格> --slOrdType market \
